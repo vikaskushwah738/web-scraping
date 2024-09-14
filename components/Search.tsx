@@ -3,13 +3,17 @@ import { useState } from "react";
 export default function SearchBar() {
     const [serachPrommt, setSerachPrommt] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const products=[];
     const handleSubmit = (e: any) => {
+        e.preventDefault();
+        setIsLoading(true)
         try {
         
         }
-        catch {
-        
+        catch (error) {
+        console.log(error);
         }
+        setIsLoading(false);
     }
     return (
         <div className="flex-col lg:flex-row w-full item-left items-center flex gap-2 pt-10">
@@ -22,12 +26,19 @@ export default function SearchBar() {
             />
             <button
                 onClick={handleSubmit}
+                disabled={serachPrommt === "" || isLoading}
                 className={`${serachPrommt !== "" && !isLoading ? "cursor-pointer" : ""}
-                h-10 text-white w-[150px] bg-slate-800 rounded-md`}
-                type="submit"
+                h-10 text-white disabled:bg-gray-400 w-[150px] bg-slate-800 rounded-md`}
             >
                 {isLoading ? "Scraping" : "Scraper"}
             </button>
+            <button
+                onClick={()=> {}}
+                disabled={!products.length || isLoading}
+                className={` ${products?.length || isLoading ? "cursor-pointer" : ""}
+                h-10 text-white disabled:bg-gray-400 w-[150px] bg-slate-800 rounded-md`}>
+                Export
+            </button>
         </div>
-    );
+    ); 
 }
