@@ -1,9 +1,9 @@
 "use server"
 
 import { revalidatePath } from "next/cache";
-import puppeteer from "puppeteer"
-
-export default async function scrapeOlxProducts(url: string) {
+import puppeteer from "puppeteer";
+import fs from "fs";
+export async function scrapeOlxProducts(url: string) {
     try { 
       const browser= await puppeteer.launch({headless: false});
       const page= await browser.newPage();
@@ -25,7 +25,9 @@ export default async function scrapeOlxProducts(url: string) {
       const data = await page.evaluate(() => {
       const title=$("h1._1hJph").text().trim();
       const price=$("span.T8y-z").text().trim();
-      const description=$("div.rui-oN78c").children().text(); 
+      //const description=$("div.rui-oN78c").find("#itemDescriptionContent").text();
+      const description =$("div[data-aut-id='itemDescriptionContent']").text().trim() || '';
+ 
       const features: string[]=[];
       return {title, price,  description, features}
       })
@@ -36,4 +38,19 @@ export default async function scrapeOlxProducts(url: string) {
       console.log(error);
       return null;
     }
+}
+
+export async function exportData(data: any) {
+  try{
+   const jsonContent=JSON.stringify(data, null, 4);
+   fs.writeFile("data.json", jsonContent, "utf-8", (err) =>{
+    if(err){
+      console.error("Somethink went wrong try again");
+      console.error(err)
+    }
+    console.log("JSON file successfully created")
+   })
+  } catch(error){
+    console.log(error)
+  }
 }
