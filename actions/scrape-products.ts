@@ -12,7 +12,9 @@ export default async function scrapeOlxProducts(url: string) {
         timeout: 120000,
       })  
       await page.goto(url, { waitUntil: "networkidle0", timeout: 120000});
-      await page.addScriptTag({url: "htpps://code.jquery-3.6.0.min.js",})
+      await page.addScriptTag({ url: "https://code.jquery.com/jquery-3.6.0.min.js" });
+  
+
       await navigationPromise;
 
       const isJQueryLoaded = await page.evaluate(() => !!window?.jQuery)
@@ -20,16 +22,16 @@ export default async function scrapeOlxProducts(url: string) {
        throw new Error("jQuery not loaded") 
       }
 
-      const data= await page.evaluate(() =>{
-      const title="";
-      const price="";
-      const description="";
-      const features: string="";
-      return {title, price, description, features}
+      const data = await page.evaluate(() => {
+      const title=$("h1._1hJph").text().trim();
+      const price=$("span.T8y-z").text().trim();
+      const description=$("div.rui-oN78c").children().text(); 
+      const features: string[]=[];
+      return {title, price,  description, features}
       })
       await browser.close();
       revalidatePath("/");
-      return (...data, url)
+      return {...data, url}
     } catch (error){
       console.log(error);
       return null;
