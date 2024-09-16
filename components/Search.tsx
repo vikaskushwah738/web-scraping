@@ -1,5 +1,5 @@
 'use client'
-import scrapeOlxProducts from "@/actions/scrape-products";
+import {scrapeOlxProducts, exportData} from "@/actions/scrape-products";
 import useStore from "@/hooks/olx-products";
 import { useState } from "react";
 export default function SearchBar() {
@@ -21,6 +21,14 @@ export default function SearchBar() {
         }
         setIsLoading(false);
     }
+    const exportProduct = async() =>{
+     try{
+       await exportData(products);
+       alert("exported.")
+     } catch(error){
+        console.log(error)
+     }
+    }
     return (
         <div className="flex-col lg:flex-row w-full item-left items-center flex gap-2 pt-10">
             <input
@@ -36,10 +44,10 @@ export default function SearchBar() {
                 className={`${serachPromt !== "" && !isLoading ? "cursor-pointer" : ""}
                 h-10 text-white disabled:bg-gray-400 w-[150px] bg-slate-800 rounded-md`}
             >
-                {isLoading ? "Scraping" : "Scraper"}
+                {isLoading ? "Scraping..." : "Scraper"}
             </button>
             <button
-                onClick={()=> {}}
+                onClick={exportProduct}
                 disabled={!products.length || isLoading}
                 className={`${products?.length || isLoading ? "cursor-pointer" : ""}
                 h-10 text-white disabled:bg-gray-400 w-[150px] bg-slate-800 rounded-md`}>
